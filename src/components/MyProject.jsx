@@ -18,9 +18,9 @@ function MyProject() {
                     <h5>Media Player</h5>
                     <div className="d-flex justify-content-around align-items-center">
                         <EditProject />
-                        <FontAwesomeIcon icon={faGithub} className='me-4'   />
-                        <FontAwesomeIcon icon={faGlobe} className='me-4'   />
-                        <FontAwesomeIcon icon={faTrash} className='me-4'   />
+                        <FontAwesomeIcon icon={faGithub} className='me-4 text-info'  />
+                        <FontAwesomeIcon icon={faGlobe} className='me-4 text-primary'   />
+                        <FontAwesomeIcon icon={faTrash} className='me-4 text-danger'   />
                     </div>
                 </div>
 

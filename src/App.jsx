@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import './App.css'
 import Projects from './pages/Projects';
 import Home from './pages/Home';
@@ -8,6 +8,10 @@ import Footer from './components/Footer';
 import Dashboard from './pages/Dashboard';
 
 function App() {
+
+  // const location = new useLocation();
+
+  // const noFooterRoutes = ['/login']
 
   return (
     <>
