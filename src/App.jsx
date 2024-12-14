@@ -9,9 +9,9 @@ import Dashboard from './pages/Dashboard';
 
 function App() {
 
-  // const location = new useLocation();
+  const location = new useLocation();
 
-  // const noFooterRoutes = ['/login']
+  const noFooterRoutes = ['/login', '/register'];
 
   return (
     <>
@@ -24,7 +24,7 @@ function App() {
         <Route path = '/dashboard' element = { < Dashboard />} />
       </Routes>
       
-      <Footer />
+{  !noFooterRoutes.includes(location.pathname) &&   <Footer />}
     </>
   )
 }
