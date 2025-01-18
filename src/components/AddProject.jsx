@@ -21,10 +21,26 @@ function AddProject() {
 
     useEffect(() => {
         projectDetails.projectImage &&
+            // add imageURL
             setPreview(URL.createObjectURL(projectDetails.projectImage))
     }, [projectDetails.projectImage])
     
-    const handleClose = () => setShow(false);
+    const handleClose = () =>{ 
+        setShow(false);
+        setTimeout(()=>{
+            // revoke imageURL
+            setPreview(URL.revokeObjectURL(projectDetails.projectImage))
+            setProjectDetails({
+                title: "",
+                language: "",
+                github: "",
+                website: "",
+                overview: "",
+                projectImage: ""
+            })
+        }, 1000)
+        
+    }
     const handleShow = () => setShow(true);
 
     return (
@@ -50,15 +66,15 @@ function AddProject() {
                             <input type="text" className='w-100 p-1 mt-2 rounded border-secondary border form-control' value={projectDetails.language} onChange={(e)=>setProjectDetails({...projectDetails, language: e.target.value })} placeholder='Language' />
                             <input type="text" className='w-100 p-1 mt-2 rounded border-secondary border form-control' value={projectDetails.github} onChange={(e)=>setProjectDetails({...projectDetails, github: e.target.value })} placeholder='Github' />
                             <input type="text" className='w-100 p-1 mt-2 rounded border-secondary border form-control' value={projectDetails.website} onChange={(e)=>setProjectDetails({...projectDetails, website: e.target.value })} placeholder='Website' />
-                            <textarea type="text" rows={6} className='w-100 p-1 mt-2 rounded' placeholder='Vverview' value={projectDetails.ove} onChange={(e)=>setProjectDetails({...projectDetails, overview: e.target.value })} /> 
+                            <textarea type="text" rows={6} className='w-100 p-1 mt-2 rounded' placeholder='Overview' value={projectDetails.ove} onChange={(e)=>setProjectDetails({...projectDetails, overview: e.target.value })} /> 
                         </div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={ ()=> handleClose()}>
                         Close
                     </Button>
-                    <Button variant="primary btn-warning" onClick={handleClose}>
+                    <Button variant="primary btn-warning" onClick={ ()=> handleClose()}>
                         Save Changes
                     </Button>
                 </Modal.Footer>
