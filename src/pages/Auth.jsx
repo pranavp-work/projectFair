@@ -3,13 +3,21 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStackOverflow } from '@fortawesome/free-brands-svg-icons';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { requestApi } from '../service/allApi';
+import { loginApi, requestApi } from '../service/allApi';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Auth({ register }) {
 
   const navigate = useNavigate()
+  const [isLogin, setIsLogin] = useState(false);
+  // const sessionAlive = sessionStorage.getItem('existingUser');
+
+  if(sessionStorage.getItem('existingUsers')) {
+    setIsLogin(true)
+  } else {
+    setIsLogin(false)
+  }
 
   const [userDetails, setUserDetails] = useState({
     username: "",
@@ -39,9 +47,32 @@ function Auth({ register }) {
                   <h5 className='text-center text-white'><FontAwesomeIcon icon={faStackOverflow} /> Project Fair</h5>
                   <h5 className='text-center text-white'>Sign into your account</h5>
 
-                  <input type="text" placeholder='email' className='w-100 p-1 mt-3 rounded-2 border-0' />
-                  <input type="password" placeholder='password' className='w-100 p-1 mt-3 rounded-2 border-0' />
-                  <button className='btn w-100 p-1 btn-warning mt-3 rounded-2'>Login</button>
+                  <input type="text" placeholder='email' value={userDetails.email} onChange={(e) => setUserDetails({...userDetails, email: e.target.value})} className='w-100 p-1 mt-3 rounded-2 border-0' />
+                  <input type="password" placeholder='password' value={userDetails.password} onChange={(e) => setUserDetails({...userDetails, password: e.target.value})} className='w-100 p-1 mt-3 rounded-2 border-0' />
+                  <button className='btn w-100 p-1 btn-warning mt-3 rounded-2' onClick={async () => {
+                    const {email, password} = userDetails
+                    if(!email || !password) {
+                      toast.warning('Enter email and password to login!')
+                    } else {
+                      const result = await loginApi({email, password})
+                      console.log(result);
+                      if(result.status == 200) {
+                        toast.success('Login success!');
+
+                        // create session storage to store jwt token and user details
+                        sessionStorage.setItem('existingUsers', JSON.stringify(result.data.existingUsers));
+                        sessionStorage.setItem('token', result.data.token);
+
+                        setTimeout(()=> {
+                          navigate('/');
+                        }, 2000)
+                      } else if(result.status == 406) {
+                        toast.warning(result.response.data)
+                      } else {
+                        toast.error('Something went wrong!')
+                      }
+                    }
+                  }}>Login</button>
                   <p className='text-white'>New User? Click here to <Link to='/register' className='text-danger' style={{ textDecorationColor: 'red' }}>Register</Link></p>
                 </div>
 
@@ -66,7 +97,7 @@ function Auth({ register }) {
                         } else if(result.status == 406) {
                           toast.warning(result.response.data)
                         } else {
-                          toast.danger('Something went wrong!')
+                          toast.error('Something went wrong!')
                         }
                       }
                     }}>Register</button>

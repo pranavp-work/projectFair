@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Header from './../components/Header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
@@ -6,6 +6,14 @@ import ProjectCard from './../components/ProjectCard';
 import { Link } from 'react-router-dom';
 
 function Projects() {
+
+  // const [isLogin, setIsLogin] = useState(false);
+  // if(sessionStorage.getItem('existingUsers')) {
+  //   setIsLogin(true);
+  // } else {
+  //   setIsLogin(false);
+  // }
+
   return (
     <>
       < Header />
@@ -13,6 +21,7 @@ function Projects() {
         <h2 className="text-center">All Projects</h2>
 
         {/* not login */}
+ 
         <div className='container'>
           <div className="row">
             <div className="col-md-3"></div>
