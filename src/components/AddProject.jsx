@@ -2,12 +2,21 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { addProjectApi } from '../service/allApi';
+import { useNavigate } from 'react-router-dom';
 
 function AddProject() {
+
+    const navigate = useNavigate()
 
     const [show, setShow] = useState(false);
 
     const [preview, setPreview] = useState("");
+
+    const [token, setToken] = useState("");
+    console.log(token);
 
     const [projectDetails, setProjectDetails] = useState({
         title: "",
@@ -19,11 +28,21 @@ function AddProject() {
     })
     console.log(projectDetails);
 
+    // blob
     useEffect(() => {
+
+        // token
+        setToken(sessionStorage.getItem('token'));
+
         projectDetails.projectImage &&
             // add imageURL
             setPreview(URL.createObjectURL(projectDetails.projectImage))
     }, [projectDetails.projectImage])
+
+    // token
+    // useEffect(() => {
+    //     setToken(sessionStorage.getItem('token'));
+    // }, [])
     
     const handleClose = () =>{ 
         setShow(false);
@@ -42,6 +61,41 @@ function AddProject() {
         
     }
     const handleShow = () => setShow(true);
+
+    const handleAdd = async () => {
+        const { title, language, github, website, overview, projectImage } = projectDetails;
+        if ( !title || !language || !github || !website || !overview || !projectImage ) {
+            toast.warning('Please fill the form completely!')
+        } else {
+            // should use append() method - if request body contains upload contents (in the FormData class)
+            // append() = to create reqBody
+
+            const reqBody = new FormData()
+
+            reqBody.append("title", title)
+            reqBody.append("language", language)
+            reqBody.append("github", github)
+            reqBody.append("website", website)
+            reqBody.append("overview", overview)
+            reqBody.append("projectImage", projectImage)
+
+            if(token) {
+                const reqHeader = {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                }
+                const result = await addProjectApi(reqBody, reqHeader)
+                console.log(result);
+            } else {
+                toast.info('Please login!')
+                setTimeout(() => {
+                    navigate('/login');
+                }, 2000)
+            }
+
+            
+        }
+    }
 
     return (
         <>
@@ -74,11 +128,12 @@ function AddProject() {
                     <Button variant="secondary" onClick={ ()=> handleClose()}>
                         Close
                     </Button>
-                    <Button variant="primary btn-warning" onClick={ ()=> handleClose()}>
+                    <Button variant="primary btn-warning" onClick={ ()=> handleAdd()}>
                         Save Changes
                     </Button>
                 </Modal.Footer>
             </Modal>
+            <ToastContainer position='top-center' autoClose={2000} theme='colored' />
         </>
     )
 }
