@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStackOverflow } from '@fortawesome/free-brands-svg-icons';
@@ -13,11 +13,16 @@ function Auth({ register }) {
   const [isLogin, setIsLogin] = useState(false);
   // const sessionAlive = sessionStorage.getItem('existingUser');
 
-  if(sessionStorage.getItem('existingUsers')) {
-    setIsLogin(true)
-  } else {
-    setIsLogin(false)
-  }
+  // if(sessionStorage.getItem('existingUsers')) {
+  //   setIsLogin(true)
+  // } else {
+  //   setIsLogin(false)
+  // }
+
+  useEffect(() => {
+    const existingUsers = sessionStorage.getItem('existingUsers');
+    setIsLogin(!!existingUsers); // Convert value to boolean
+  }, []); 
 
   const [userDetails, setUserDetails] = useState({
     username: "",
